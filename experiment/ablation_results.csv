@@ -1,5 +1,0 @@
-control,prohibited_total,prohibited_blocked,prohibited_allowed,benign_total,benign_allowed,privacy_block_rate,benign_utility_rate
-none,10,0,10,6,6,0.0,100.0
-output_filter,10,2,8,6,6,20.0,100.0
-source_scope,10,3,7,6,6,30.0,100.0
-flow_policy,10,10,0,6,6,100.0,100.0

@@ -13,7 +13,7 @@ An agent can produce a harmless answer while exposing private data through a too
 | Illustrated article | [Read on Medium](https://medium.com/@bhanagearshan/your-ai-agent-can-give-a-clean-answer-and-still-leak-your-data-36e49baa2978) |
 | Published presentation | [View on Scribd](https://www.scribd.com/document/1098754475/Agent-Privacy-Short-Story-pdf) |
 | Slide deck — 22 slides | [PDF](slides/Agent_Privacy_Short_Story.pdf) · [PowerPoint](slides/Agent_Privacy_Short_Story.pptx) |
-| Article files | [Markdown](article/medium-article.md) · [HTML](article/medium-article-standalone.html) · [PDF](article/Medium_Article_Proof.pdf) |
+| Article copy | [Read in this repository](article/medium-article.md) |
 | Video presentation | Pending recording |
 
 ## Main ideas
@@ -31,14 +31,6 @@ The proposed design checks data transfers before execution and carries access an
 
 ![Policy-gated agent architecture](figures/07-policy-architecture.png)
 
-## Synthetic ablation
-
-Sixteen invented policy cases compare how different controls handle allowed and disallowed transfers. The results illustrate the limits of answer-only filtering; they do not measure a live LLM or establish real-world security.
-
-[Aggregate results](experiment/ablation_results.csv) · [Case-level decisions](experiment/scenario_decisions.csv)
-
-![Synthetic policy ablation](figures/06-synthetic-ablation.png)
-
 ## Research sources
 
 **Primary survey**
@@ -54,10 +46,4 @@ The primary survey is an arXiv working draft. It presents privacy taxonomies and
 
 **Empirical and benchmark context:** El Yagoubi et al., *AgentLeak*, *IEEE Access* June 2026, [DOI](https://doi.org/10.1109/ACCESS.2026.3704541); Debenedetti et al., *AgentDojo*, NeurIPS 2024, [paper](https://proceedings.neurips.cc/paper_files/paper/2024/hash/97091a5177d8dc64b1da8bf3e1f6fb54-Abstract-Datasets_and_Benchmarks_Track.html).
 
-## Supporting material
-
-- [Figures](figures/): cover illustration and seven explanatory diagrams and charts.
-- [Evidence and critique](research/EVIDENCE_AND_CRITIQUE.md): source attribution, findings, and limitations.
-- [Bibliography](research/references.bib): references used in the article and presentation.
-
-The writing and figures are original compositions based on the cited research. Published benchmark findings are attributed to their sources; synthetic results are identified separately.
+References and figure attributions are included in the [article](article/medium-article.md) and slide deck.

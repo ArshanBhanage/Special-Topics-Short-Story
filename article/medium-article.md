@@ -10,7 +10,7 @@ Imagine asking an internal assistant: “Can you summarize my order status?” T
 
 That is the central idea I took away from **“Agents That Know Too Much: A Data-Centric Survey of Privacy in LLM Agents”** by Nada Lahjouji and Ashwin Gerard Colaco (University of California, Irvine; posted June 25, 2026). Rather than starting with a catalogue of attacks, the authors start with **the places where data goes**. Their three connected taxonomies—data surfaces, disclosure outcomes, and governance mechanisms—offer a useful framework for building agent systems. [1]
 
-I read this survey alongside three newer reviews and a peer-reviewed benchmark: an August 2026 survey of agent architectures [2], a September 2026 systematic review of agent evaluation [3], an October 2026 survey of LLM memory [4], and the June 2026 *AgentLeak* study [5]. I also built a small, reproducible **synthetic** ablation to illustrate why output filtering is only one piece of the solution. None of that toy experiment's results should be mistaken for measurements on a real LLM.
+I read this survey alongside three newer reviews and a peer-reviewed benchmark: an August 2026 survey of agent architectures [2], a September 2026 systematic review of agent evaluation [3], an October 2026 survey of LLM memory [4], and the June 2026 *AgentLeak* study [5]. I also built a small **synthetic** ablation to illustrate why output filtering is only one piece of the solution. None of that toy experiment's results should be mistaken for measurements on a real LLM.
 
 ![Original diagram showing the six data surfaces of an LLM agent.](../figures/01-six-data-surfaces.png)
 
@@ -108,11 +108,11 @@ To turn the architecture discussion into something inspectable, I wrote a 100%-s
 3. **Source scoping:** reject reads when the source is not on the role's allowlist.
 4. **Flow-policy gate:** require source permission, a matching purpose, and an allowed sensitivity label for the destination.
 
-The two measures are **prohibited flows blocked** and **permitted flows retained**. Both use fixed, auditable denominators: 10 and 6. The code and all case-level decisions are included in the repository under `experiment/`.
+The two measures are **prohibited flows blocked** and **permitted flows retained**. Both use fixed, auditable denominators: 10 and 6. The chart below summarizes the results.
 
-![Reproducible synthetic ablation comparing blocked unauthorized and retained permitted flows.](../figures/06-synthetic-ablation.png)
+![Synthetic ablation comparing blocked unauthorized and retained permitted flows.](../figures/06-synthetic-ablation.png)
 
-*Figure 6. Actual deterministic output from the included synthetic harness: 0%, 20%, 30%, and 100% of prohibited flows blocked across the four configurations; all six permitted flows were allowed. Because the fixtures and flow labels were explicitly constructed, the 100% result is a policy-unit-test outcome—not evidence that a real LLM system is perfectly secure.*
+*Figure 6. Deterministic output from the synthetic demonstration: 0%, 20%, 30%, and 100% of prohibited flows blocked across the four configurations; all six permitted flows were allowed. Because the fixtures and flow labels were explicitly constructed, the 100% result is a policy-unit-test outcome—not evidence that a real LLM system is perfectly secure.*
 
 The exercise does **not** prove information-flow enforcement is easy. The hard engineering problems are the ones the toy model assumes away: accurately assigning data labels, propagating them through free-form text and model-generated summaries, resolving complex consent rules, accounting for inference from repeated aggregates, and dealing with uncertain downstream service behavior. An evaluation that reports “100% safe” on a hand-authored policy test without explaining those omissions would be misleading.
 
