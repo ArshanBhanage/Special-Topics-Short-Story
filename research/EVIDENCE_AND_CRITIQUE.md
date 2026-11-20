@@ -45,7 +45,7 @@
 | 03 | Defense control coverage | Newly rendered qualitative comparison based on [1]; dots are **not** measured precision/accuracy |
 | 04 | AgentLeak findings | Newly constructed chart of reported values from [5]; careful about overlapping categories |
 | 05 | Benchmark gap map | Newly constructed interpretation of source benchmark coverage in [1]; not model leaderboard |
-| 06 | Synthetic ablation | Newly generated from `experiment/privacy_ablation.py`; no external empirical evidence claimed |
+| 06 | Synthetic ablation | Original synthetic results retained in `experiment/ablation_results.csv`; no external empirical evidence claimed |
 | 07 | Privacy-aware architecture | Original proposed design informed by [1–4], not tested architecture |
 
 ## Critical position

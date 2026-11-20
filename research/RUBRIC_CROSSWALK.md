@@ -14,8 +14,8 @@ The assignment requested an individual recent-survey short story, taxonomy, impo
 | Medium.com *published* story link | Published URL in README / `medium_url` in links.json | **Completed** |
 | Slide deck | 22-slide editable PPTX, PDF, contact sheet | **Prepared** |
 | Presentation publication link | Published Scribd PDF in README / `hosted_presentation_url` in links.json; SlideShare intentionally not used | **Completed via Scribd** |
-| 10–15 minute recording; YouTube no less than 15 min | 15:23 timed narration and recording instructions | **Script prepared; no video recorded or uploaded** |
-| Video embedded/uploaded in GitHub | `video/` has script, no fabricated MP4 | **Not completed: author to record** |
+| 10–15 minute recording; YouTube no less than 15 min | Recording deferred to author | **Pending author recording** |
+| Video embedded/uploaded in GitHub | Recording to be added by author | **Not completed: author to record** |
 | Public GitHub directory + comprehensive README | Repository-root `README.md`, source and assets, ZIP to import | **Ready to upload; public status unverified** |
 | Add GitHub link to course spreadsheet | Link already exists in linked text at row B19 to intended repository | **Hyperlink present; public repo not verified and display text remains generic** |
 | Instructor approved topic | Sheet `2026 short story` row 19: `A19` is `approved`; `D19` links to the primary survey | **Verified** |

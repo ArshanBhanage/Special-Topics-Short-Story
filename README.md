@@ -4,7 +4,7 @@
 **Author:** Arshan Bhanage  
 **Survey date:** June 25, 2026 | **Assembled:** November 19, 2026  
 **Public GitHub repository:** <https://github.com/ArshanBhanage/Special-Topics-Short-Story>  
-**Submission package:** article, deck, figures, experiment, research notes, and recording materials are included below. External publication status is tracked explicitly; a prepared local file is not presented as a public post.
+**Submission package:** article, deck, figures, experiment results, and research notes.
 
 > **Central question:** Can an LLM agent disclose private information even when its final answer contains nothing sensitive? **Yes.** The safety of an agent depends on the full sequence of data movements through tools, retrieval, storage, and other agents—not the final answer alone.
 
@@ -12,21 +12,19 @@
 
 | Article | Deck | Experiment | Video |
 | --- | --- | --- | --- |
-| Draft complete | 22 slides complete | Deterministic and reproducible | Recording still required |
+| Published | 22 slides complete | Synthetic results included | Recording still required |
 
-## Read / view / reproduce
+## Read and view
 
 | Deliverable | File or publication destination | Status |
 | --- | --- | --- |
-| **Original Medium-style article (3,255 words)** | [Markdown source](article/medium-article.md) · [self-contained HTML](article/medium-article-standalone.html) · [8-page PDF proof](article/Medium_Article_Proof.pdf) | **Written and ready; Medium publication pending** |
+| **Original Medium-style article (3,255 words)** | [Markdown source](article/medium-article.md) · [self-contained HTML](article/medium-article-standalone.html) · [8-page PDF proof](article/Medium_Article_Proof.pdf) | **Local article files included** |
 | Medium live article URL | [Published Medium story](https://medium.com/@bhanagearshan/your-ai-agent-can-give-a-clean-answer-and-still-leak-your-data-36e49baa2978) | **Published** |
 | **Presentation (22 slides)** | [Editable PowerPoint](slides/Agent_Privacy_Short_Story.pptx) · [Slides/PDF](slides/Agent_Privacy_Short_Story.pdf) · [slide preview](slides/contact-sheet.png) | **Prepared** |
 | Published presentation PDF | [Scribd link](https://www.scribd.com/document/1098754475/Agent-Privacy-Short-Story-pdf) | **Published** |
-| **15+ minute video materials** | [Timed 22-slide narration](video/15-minute-narration-and-notes.md) · [recording checklist](video/recording-checklist.md) · [YouTube description](video/youtube-description.md) | Prepared; video recording/upload left to author |
 | YouTube link | **To be added after recording** | Pending author video |
-| Recorded MP4 file | Put your finished file in `video/` or provide a YouTube link (see size limits below) | Not yet recorded |
 | **Original figures (7)** | [`figures/`](figures/) | Included |
-| **Reproducible demonstration** | [`experiment/privacy_ablation.py`](experiment/privacy_ablation.py) · [aggregate CSV](experiment/ablation_results.csv) · [all case decisions](experiment/scenario_decisions.csv) | Included and executed |
+| **Synthetic experiment results** | [aggregate CSV](experiment/ablation_results.csv) · [all case decisions](experiment/scenario_decisions.csv) | Included and executed |
 | Research provenance | [Source and evidence audit](research/EVIDENCE_AND_CRITIQUE.md) · [references](research/references.bib) | Included |
 | Rubric and publication checks | [rubric crosswalk](research/RUBRIC_CROSSWALK.md) · [publication instructions](publishing/PUBLISHING_AND_SUBMISSION.md) | Included |
 | Professor's course spreadsheet | [Fall 2026 CMPE 297 selections](https://docs.google.com/spreadsheets/d/13YnPKykntSONmfqkHyh94d7KsIvjdhrkblqKg8yLTFM/edit#gid=141293072) · row **19** | Row 19 is marked **approved** and links to this repository; the paper field links to the primary survey |
@@ -70,21 +68,14 @@ A small included **synthetic policy unit test** uses 16 entirely invented cases 
 
 All figures are original compositions/reconstructions, not screenshots of the papers. Full citations and provenance are in the article and research audit.
 
-## Run the ablation
+## Synthetic experiment results
 
-**Requirements:** Python 3.9+; no third-party packages or API keys required to run the policy harness. Figures/PowerPoint are pre-generated and committed; source for rebuilding them is in `src/`.
-
-```bash
-python3 experiment/privacy_ablation.py
-```
-
-The script re-creates `experiment/ablation_results.json`, `experiment/ablation_results.csv`, and `experiment/scenario_decisions.csv`. It uses static invented fixtures with known policy labels and deterministic evaluations. It does not issue LLM calls. To rebuild figures, install matplotlib and Pillow and run `python3 src/make_figures.py` (the optional figures tool assumes paths relative to this project). To rebuild slides, install Node.js, PptxGenJS, and the OpenAI slides helper module as described in [rebuild notes](src/REBUILD_NOTES.md); the pre-generated PPTX is the authoritative deliverable.
+The `experiment/` directory contains aggregate results and case-level decisions for 16 invented policy fixtures. These deterministic results illustrate policy coverage; they do not measure a live LLM.
 
 ## Suggested presentation flow (22 slides, ~15:23)
 
 Motivation → primary survey and paper dates → six surfaces → six outcomes → nine defenses → reference implementation → independently reported AgentLeak results → benchmark gaps and evaluation metrics → case-level ablation → memory governance → future research challenge → references.
 
-The complete spoken narration is provided in [`video/15-minute-narration-and-notes.md`](video/15-minute-narration-and-notes.md). Read at a measured pace and check the **actual** exported video is at least **15:00**, not just the theoretical timestamps.
 
 ## Publish and submit
 
@@ -92,18 +83,18 @@ The complete spoken narration is provided in [`video/15-minute-narration-and-not
 2. Ensure the target GitHub repository exists and is **public**, then upload **the contents of this directory to the repository root**. Do not accidentally nest an extra `agent-privacy-short-story/` directory unless that is the intended assignment directory link.
 3. Publish the article **as a new Medium post** (not an existing Medium article) using the original draft and figure uploads; paste the *actual* final Medium URL above.
 4. The finished presentation PDF is published on Scribd at the URL above.
-5. Record the narrated slides and upload a **video of 15 minutes or longer** to YouTube; paste its URL above and place the MP4 under `video/` if GitHub file size permits. For larger videos, use Git LFS or point GitHub to the YouTube video rather than trying to commit a >100 MB blob.
+5. Record the narrated slides and upload a **video of 15 minutes or longer** to YouTube; paste its URL above and add the recording to the repository if GitHub file size permits. For larger videos, use Git LFS or point GitHub to the YouTube video rather than trying to commit a >100 MB blob.
 6. Verify the course sheet `2026 short story` row 19 references the **public** GitHub repository. The row is currently marked approved and the paper cell links to the primary survey.
 7. Open the repository as a logged-out visitor, click every link, and confirm access before submitting the exact public GitHub directory URL.
 
-**Status:** The public repository, approved topic, article/deck/figures, reproducible experiment, Scribd presentation, and Medium publication are complete. The >=15-minute video remains outstanding. See [rubric crosswalk](research/RUBRIC_CROSSWALK.md).
+**Status:** The public repository, approved topic, article/deck/figures, experiment results, Scribd presentation, and Medium publication are complete. The >=15-minute video remains outstanding. See [rubric crosswalk](research/RUBRIC_CROSSWALK.md).
 
 ## Integrity and reproducibility
 
 - Figures and writing are newly created, with credit to the surveyed authors and empirical sources.
 - Survey taxonomy tables are **qualitative**; no invented model leaderboard numbers, ablation claims, or paper-specific training runs.
 - Published rates and denominators are attributed to their original sources, not to this project.
-- The synthetic test cases are transparent and inspectable in source code. Nothing has been sent to a live LLM or production agent.
+- The synthetic case decisions are included in the experiment CSV. Nothing has been sent to a live LLM or production agent.
 - The proposed architecture is an engineering synthesis, not a validated contribution from the primary authors.
 
-**License:** Original prose, figures, and scripts for coursework; external research retains its authors' rights. Cite the original articles when reusing their findings.
+**License:** Original prose and figures for coursework; external research retains its authors' rights. Cite the original articles when reusing their findings.
