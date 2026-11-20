@@ -11,7 +11,7 @@ The assignment requested an individual recent-survey short story, taxonomy, impo
 | Explain important techniques and leaderboard results | Access control, information flow, runtime gate, privacy transformation, formal privacy, confidential retrieval, audit, human oversight; AgentLeak real numbers; survey benchmark coverage | **Included with honest limitation: no numeric leaderboard in anchor survey** |
 | Architectures, ablations, metrics, personal interpretation | Architecture, synthetic 16-case ablation, 4 metric families, independent critique and research proposal | **Included** |
 | Several pages of original Medium-ready article and visuals | `article/medium-article.md`, standalone HTML, PDF proof; seven original figures | **Written; not posted on Medium** |
-| Medium.com *published* story link | Publication row in README / `medium_url` in links.json | **Not completed: account publication required** |
+| Medium.com *published* story link | Published URL in README / `medium_url` in links.json | **Completed** |
 | Slide deck | 22-slide editable PPTX, PDF, contact sheet | **Prepared** |
 | Presentation publication link | Published Scribd PDF in README / `hosted_presentation_url` in links.json; SlideShare intentionally not used | **Completed via Scribd** |
 | 10–15 minute recording; YouTube no less than 15 min | 15:23 timed narration and recording instructions | **Script prepared; no video recorded or uploaded** |

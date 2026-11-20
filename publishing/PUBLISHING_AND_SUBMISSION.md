@@ -22,7 +22,7 @@ Visit [the Fall 2026 sheet](https://docs.google.com/spreadsheets/d/13YnPKykntSON
 4. Upload the PNG illustrations from `figures/` as native Medium images **near their matching figure captions**. Medium may not preserve relative paths from pasted Markdown. Check the preview: every figure must actually render.
 5. Suggested topics/tags: `AI Agents`, `LLM Security`, `AI Engineering`, `Generative AI`, `LLM Evaluation` (within Medium's tag count limit).
 6. Preview on desktop/mobile, review caption contrast and spelling, then **Publish** and copy the live story URL.
-7. Replace the README's Medium pending status with the real URL. Also enter it in `publishing/links.json` under `medium_url`.
+7. The live Medium URL is recorded in the README and `publishing/links.json` under `medium_url`.
 
 **Suggested Medium description:** An original, diagram-rich research synthesis of a June 2026 agent-privacy survey, enriched with recent evaluation/memory reviews, peer-reviewed AgentLeak evidence, and an explicitly synthetic ablation.
 

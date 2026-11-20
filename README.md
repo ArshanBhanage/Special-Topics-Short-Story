@@ -19,7 +19,7 @@
 | Deliverable | File or publication destination | Status |
 | --- | --- | --- |
 | **Original Medium-style article (3,255 words)** | [Markdown source](article/medium-article.md) · [self-contained HTML](article/medium-article-standalone.html) · [8-page PDF proof](article/Medium_Article_Proof.pdf) | **Written and ready; Medium publication pending** |
-| Medium live article URL | **To be added after publication** | Pending author publication |
+| Medium live article URL | [Published Medium story](https://medium.com/@bhanagearshan/your-ai-agent-can-give-a-clean-answer-and-still-leak-your-data-36e49baa2978) | **Published** |
 | **Presentation (22 slides)** | [Editable PowerPoint](slides/Agent_Privacy_Short_Story.pptx) · [Slides/PDF](slides/Agent_Privacy_Short_Story.pdf) · [slide preview](slides/contact-sheet.png) | **Prepared** |
 | Published presentation PDF | [Scribd link](https://www.scribd.com/document/1098754475/Agent-Privacy-Short-Story-pdf) | **Published** |
 | **15+ minute video materials** | [Timed 22-slide narration](video/15-minute-narration-and-notes.md) · [recording checklist](video/recording-checklist.md) · [YouTube description](video/youtube-description.md) | Prepared; video recording/upload left to author |
@@ -31,7 +31,7 @@
 | Rubric and publication checks | [rubric crosswalk](research/RUBRIC_CROSSWALK.md) · [publication instructions](publishing/PUBLISHING_AND_SUBMISSION.md) | Included |
 | Professor's course spreadsheet | [Fall 2026 CMPE 297 selections](https://docs.google.com/spreadsheets/d/13YnPKykntSONmfqkHyh94d7KsIvjdhrkblqKg8yLTFM/edit#gid=141293072) · row **19** | Row 19 is marked **approved** and links to this repository; the paper field links to the primary survey |
 
-**Publication note:** the presentation PDF is published on Scribd at the link above. This submission uses Scribd instead of SlideShare. The Medium story and YouTube video still require publication and recording.
+**Publication note:** the presentation PDF is published on Scribd and the article is published on Medium. This submission uses Scribd instead of SlideShare. The >=15-minute YouTube video remains to be recorded and uploaded.
 
 ## Paper selection
 
@@ -96,7 +96,7 @@ The complete spoken narration is provided in [`video/15-minute-narration-and-not
 6. Verify the course sheet `2026 short story` row 19 references the **public** GitHub repository. The row is currently marked approved and the paper cell links to the primary survey.
 7. Open the repository as a logged-out visitor, click every link, and confirm access before submitting the exact public GitHub directory URL.
 
-**Status:** The public repository, approved topic, article/deck/figures, and reproducible experiment are prepared. Scribd presentation publication is complete; Medium publication and the >=15-minute video remain outstanding. See [rubric crosswalk](research/RUBRIC_CROSSWALK.md).
+**Status:** The public repository, approved topic, article/deck/figures, reproducible experiment, Scribd presentation, and Medium publication are complete. The >=15-minute video remains outstanding. See [rubric crosswalk](research/RUBRIC_CROSSWALK.md).
 
 ## Integrity and reproducibility
 
