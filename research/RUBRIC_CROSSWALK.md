@@ -13,7 +13,7 @@ The assignment requested an individual recent-survey short story, taxonomy, impo
 | Several pages of original Medium-ready article and visuals | `article/medium-article.md`, standalone HTML, PDF proof; seven original figures | **Written; not posted on Medium** |
 | Medium.com *published* story link | Publication row in README / `medium_url` in links.json | **Not completed: account publication required** |
 | Slide deck | 22-slide editable PPTX, PDF, contact sheet | **Prepared** |
-| SlideShare *published* presentation link | Publication row in README / `slideshare_url` in links.json; current hosted PDF is on Scribd | **Not completed: account publication required** |
+| Presentation publication link | Published Scribd PDF in README / `hosted_presentation_url` in links.json; SlideShare intentionally not used | **Completed via Scribd** |
 | 10–15 minute recording; YouTube no less than 15 min | 15:23 timed narration and recording instructions | **Script prepared; no video recorded or uploaded** |
 | Video embedded/uploaded in GitHub | `video/` has script, no fabricated MP4 | **Not completed: author to record** |
 | Public GitHub directory + comprehensive README | Repository-root `README.md`, source and assets, ZIP to import | **Ready to upload; public status unverified** |

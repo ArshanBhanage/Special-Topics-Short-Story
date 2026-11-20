@@ -1,6 +1,6 @@
 # Publication and submission runbook
 
-This project contains the **finished drafts/files**, but it cannot independently authenticate your GitHub, Medium, SlideShare, or YouTube accounts. This runbook separates completed material from actions that require your account. **Do not substitute placeholders for live links.**
+This project contains the **finished drafts/files**, but it cannot independently authenticate your GitHub, Medium, Scribd, or YouTube accounts. This runbook separates completed material from actions that require your account. **Do not substitute placeholders for live links.**
 
 ## Step 0 — Confirm topic acceptance
 
@@ -26,14 +26,14 @@ Visit [the Fall 2026 sheet](https://docs.google.com/spreadsheets/d/13YnPKykntSON
 
 **Suggested Medium description:** An original, diagram-rich research synthesis of a June 2026 agent-privacy survey, enriched with recent evaluation/memory reviews, peer-reviewed AgentLeak evidence, and an explicitly synthetic ablation.
 
-## Step 3 — Publish slides to SlideShare
+## Step 3 — Presentation publication
 
-The PDF is currently available as a hosted copy on [Scribd](https://www.scribd.com/document/1098754475/Agent-Privacy-Short-Story-pdf). This does not satisfy a SlideShare publication requirement by itself; publish to SlideShare and record that separate URL when available.
+The presentation is published on [Scribd](https://www.scribd.com/document/1098754475/Agent-Privacy-Short-Story-pdf) by author choice. SlideShare is intentionally not used for this submission.
 
-1. Log into [SlideShare](https://www.slideshare.net/), choose **Upload** and select `slides/Agent_Privacy_Short_Story.pdf` (or PPTX if your account accepts it). PDF is ideal for layout consistency.
-2. Title: `Your AI Agent Can Give a Clean Answer and Still Leak Your Data | CMPE 297 Short Story`.
+1. Keep the published Scribd URL in `README.md` and `publishing/links.json`.
+2. Title used for the presentation: `Your AI Agent Can Give a Clean Answer and Still Leak Your Data | CMPE 297 Short Story`.
 3. Description: `A June 2026 data-centric survey of privacy in LLM agents: six data surfaces, six disclosure outcomes, nine control families; recent survey synthesis, AgentLeak published evidence, benchmark gaps, and transparent synthetic policy ablation. By Arshan Bhanage.`
-4. Publish it **publicly** and copy the final URL. Verify all 22 slides are present. Replace the README's SlideShare placeholder; update `publishing/links.json`.
+4. Verify the public Scribd page and confirm all 22 slides are present.
 
 ## Step 4 — Record and upload your video, >=15 minutes
 

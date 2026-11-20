@@ -21,8 +21,7 @@
 | **Original Medium-style article (3,255 words)** | [Markdown source](article/medium-article.md) · [self-contained HTML](article/medium-article-standalone.html) · [8-page PDF proof](article/Medium_Article_Proof.pdf) | **Written and ready; Medium publication pending** |
 | Medium live article URL | **To be added after publication** | Pending author publication |
 | **Presentation (22 slides)** | [Editable PowerPoint](slides/Agent_Privacy_Short_Story.pptx) · [Slides/PDF](slides/Agent_Privacy_Short_Story.pdf) · [slide preview](slides/contact-sheet.png) | **Prepared** |
-| Hosted presentation PDF | [Scribd link](https://www.scribd.com/document/1098754475/Agent-Privacy-Short-Story-pdf) | **Available** |
-| SlideShare public URL | **To be added after SlideShare publication** | Pending author publication |
+| Published presentation PDF | [Scribd link](https://www.scribd.com/document/1098754475/Agent-Privacy-Short-Story-pdf) | **Published** |
 | **15+ minute video materials** | [Timed 22-slide narration](video/15-minute-narration-and-notes.md) · [recording checklist](video/recording-checklist.md) · [YouTube description](video/youtube-description.md) | Prepared; video recording/upload left to author |
 | YouTube link | **To be added after recording** | Pending author video |
 | Recorded MP4 file | Put your finished file in `video/` or provide a YouTube link (see size limits below) | Not yet recorded |
@@ -32,7 +31,7 @@
 | Rubric and publication checks | [rubric crosswalk](research/RUBRIC_CROSSWALK.md) · [publication instructions](publishing/PUBLISHING_AND_SUBMISSION.md) | Included |
 | Professor's course spreadsheet | [Fall 2026 CMPE 297 selections](https://docs.google.com/spreadsheets/d/13YnPKykntSONmfqkHyh94d7KsIvjdhrkblqKg8yLTFM/edit#gid=141293072) · row **19** | Row 19 is marked **approved** and links to this repository; the paper field links to the primary survey |
 
-**Publication note:** the presentation PDF is currently available on Scribd at the link above. The Medium story and YouTube video still require the author's account and recording. No SlideShare or YouTube publication is claimed.
+**Publication note:** the presentation PDF is published on Scribd at the link above. This submission uses Scribd instead of SlideShare. The Medium story and YouTube video still require publication and recording.
 
 ## Paper selection
 
@@ -89,15 +88,15 @@ The complete spoken narration is provided in [`video/15-minute-narration-and-not
 
 ## Publish and submit
 
-1. Read [`publishing/PUBLISHING_AND_SUBMISSION.md`](publishing/PUBLISHING_AND_SUBMISSION.md) for exact GitHub, Medium, SlideShare, and YouTube steps.
+1. Read [`publishing/PUBLISHING_AND_SUBMISSION.md`](publishing/PUBLISHING_AND_SUBMISSION.md) for exact GitHub, Medium, Scribd, and YouTube steps.
 2. Ensure the target GitHub repository exists and is **public**, then upload **the contents of this directory to the repository root**. Do not accidentally nest an extra `agent-privacy-short-story/` directory unless that is the intended assignment directory link.
 3. Publish the article **as a new Medium post** (not an existing Medium article) using the original draft and figure uploads; paste the *actual* final Medium URL above.
-4. Upload the finished PPTX/PDF to SlideShare; paste the *actual* SlideShare URL above.
+4. The finished presentation PDF is published on Scribd at the URL above.
 5. Record the narrated slides and upload a **video of 15 minutes or longer** to YouTube; paste its URL above and place the MP4 under `video/` if GitHub file size permits. For larger videos, use Git LFS or point GitHub to the YouTube video rather than trying to commit a >100 MB blob.
 6. Verify the course sheet `2026 short story` row 19 references the **public** GitHub repository. The row is currently marked approved and the paper cell links to the primary survey.
 7. Open the repository as a logged-out visitor, click every link, and confirm access before submitting the exact public GitHub directory URL.
 
-**Status:** The public repository, approved topic, article/deck/figures, and reproducible experiment are prepared. Medium and SlideShare publication plus the >=15-minute video remain outstanding. See [rubric crosswalk](research/RUBRIC_CROSSWALK.md).
+**Status:** The public repository, approved topic, article/deck/figures, and reproducible experiment are prepared. Scribd presentation publication is complete; Medium publication and the >=15-minute video remain outstanding. See [rubric crosswalk](research/RUBRIC_CROSSWALK.md).
 
 ## Integrity and reproducibility
 
