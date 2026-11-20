@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Your AI Agent Can Give a Clean Answer and Still Leak Your Data</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+  <link rel="stylesheet" href="article-style.css" />
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">Your AI Agent Can Give a Clean Answer and Still Leak
+Your Data</h1>
+</header>
+<h1
+id="your-ai-agent-can-give-a-clean-answer-and-still-leak-your-data">Your
+AI Agent Can Give a Clean Answer and Still Leak Your Data</h1>
+<p><strong>A practical tour of agent privacy: six data surfaces, nine
+defense families, real benchmark evidence, and the architecture I would
+use in production</strong></p>
+<p><em>By Arshan Bhanage · Research short story · November 2026 ·
+~11-minute read</em></p>
+<p>A chatbot answers a question. An AI agent does considerably more: it
+searches files, queries a database, calls an API, remembers information,
+and sometimes asks another agent for help. That extra agency is
+useful—but it creates a privacy problem that is easy to overlook.</p>
+<p>Imagine asking an internal assistant: “Can you summarize my order
+status?” The final reply contains only your order number and delivery
+date. Safe, right? Not necessarily. The assistant may have sent your
+entire customer record to a third-party tool to calculate that date,
+logged the raw database result, or placed details in shared memory that
+a different assistant can read tomorrow. A clean answer cannot tell us
+whether the journey was clean.</p>
+<p>That is the central idea I took away from <strong>“Agents That Know
+Too Much: A Data-Centric Survey of Privacy in LLM Agents”</strong> by
+Nada Lahjouji and Ashwin Gerard Colaco (University of California,
+Irvine; posted June 25, 2026). Rather than starting with a catalogue of
+attacks, the authors start with <strong>the places where data
+goes</strong>. Their three connected taxonomies—data surfaces,
+disclosure outcomes, and governance mechanisms—offer a useful framework
+for building agent systems. [1]</p>
+<p>I read this survey alongside three newer reviews and a peer-reviewed
+benchmark: an August 2026 survey of agent architectures [2], a September
+2026 systematic review of agent evaluation [3], an October 2026 survey
+of LLM memory [4], and the June 2026 <em>AgentLeak</em> study [5]. I
+also built a small, reproducible <strong>synthetic</strong> ablation to
+illustrate why output filtering is only one piece of the solution. None
+of that toy experiment’s results should be mistaken for measurements on
+a real LLM.</p>
+<figure>
+<img src="../figures/01-six-data-surfaces.png"
+alt="Original diagram showing the six data surfaces of an LLM agent." />
+<figcaption aria-hidden="true">Original diagram showing the six data
+surfaces of an LLM agent.</figcaption>
+</figure>
+<p><em>Figure 1. Original adaptation of the six-surface taxonomy in
+Lahjouji and Colaco, Section 3 [1]. Every connection is a potential data
+flow. The figure is conceptual, not an instrumented trace.</em></p>
+<h2 id="the-mental-model-protect-the-execution-not-just-the-reply">The
+mental model: protect the execution, not just the reply</h2>
+<p>Most AI product demos show the user interface: input on the left,
+response on the right. The architecture between them is where privacy
+actually becomes complicated. A planner might construct SQL; the query
+returns rows; a retrieval engine adds document snippets; a tool receives
+arguments; a memory component saves context; and a second agent receives
+a handoff. Each operation transforms, copies, or moves information.</p>
+<p>Consider an agent asked to estimate travel reimbursement. It may
+legitimately read an employee’s expense amount, department, and policy
+limits. It probably does <strong>not</strong> need to copy the
+employee’s address into an analytics request, expose salary records, or
+store the expense receipt indefinitely. The hard question is not simply
+“Can this user read this table?” It is: <strong>Which values can move to
+which recipients, for which purpose, during this particular
+task?</strong></p>
+<p>Lahjouji and Colaco enumerate six data surfaces: <strong>databases
+and warehouses; tabular/file data; RAG corpora and vector stores; tools
+and external APIs; persistent agent memory; and multi-agent
+communication</strong>. They define a different sensitive unit for each
+one—from SQL rows and schemas to embeddings, tool arguments, remembered
+facts, and inter-agent messages [1]. An effective privacy design must
+include all six when they are present in a workflow.</p>
+<h3 id="three-taxonomies-are-more-useful-than-one-attack-list">Three
+taxonomies are more useful than one attack list</h3>
+<figure>
+<img src="../figures/02-taxonomy.png"
+alt="Original three-column taxonomy of privacy surfaces, outcomes, and controls." />
+<figcaption aria-hidden="true">Original three-column taxonomy of privacy
+surfaces, outcomes, and controls.</figcaption>
+</figure>
+<p><em>Figure 2. My simplified reading guide to the source paper’s three
+taxonomies [1]. It intentionally shows representative examples instead
+of every subcategory.</em></p>
+<p>The first axis is <strong>surface</strong>: where the data is held or
+transferred. The second axis is <strong>disclosure outcome</strong>:
+what kind of information is exposed. The paper distinguishes six
+outcomes: direct output leakage, intermediate-step leakage,
+schema/metadata exposure, inference/aggregation leakage, compositional
+leakage, and violations of purpose or consent. The third axis is
+<strong>governance</strong>: which control can block or limit the flow.
+The authors also separate outcomes from attack vectors—prompt injection,
+memory poisoning, excessive privileges, and compromised peers are ways a
+disclosure can be triggered, not the disclosure categories themselves
+[1].</p>
+<p>This distinction matters. A prompt-injected document could cause raw
+data to be copied into a tool argument. If we only label the incident
+“prompt injection,” we may respond by strengthening a system prompt
+while leaving the API path unrestricted. If we label it
+<strong>intermediate-step disclosure through an external tool</strong>,
+the architecture-level fix becomes clearer: classify the data, restrict
+the recipient, inspect the action, and enforce a tool-call policy
+outside the model.</p>
+<h2 id="what-actually-leaks-more-than-the-obvious-answer">What actually
+leaks? More than the obvious answer</h2>
+<p>The survey’s outcome categories reveal several less-visible failure
+modes.</p>
+<p><strong>Intermediate-step leakage</strong> happens before the final
+answer. SQL queries can reveal the names or attributes of targeted
+records; tool-call arguments can contain personal information;
+diagnostic logs and inter-agent messages can copy raw values. Hiding a
+secret from the response does nothing to undo an earlier API call.</p>
+<p><strong>Schema and metadata leakage</strong> is subtler. A list of
+confidential table names, column names, index memberships, or retrieval
+scores can expose sensitive aspects of a dataset even when row values
+are masked.</p>
+<p><strong>Inference and aggregation leakage</strong> occurs when
+supposedly safe fragments combine into a sensitive fact. An agent that
+answers several overlapping aggregate queries may enable deduction of a
+small group’s value. The individual releases can appear compliant while
+their combination is revealing.</p>
+<p><strong>Compositional leakage</strong> arises across workflow steps
+or sessions. A customer detail could be legitimately fetched for task A,
+saved to memory, and later transmitted during unrelated task B. Privacy
+is a property of the <strong>entire path</strong>, not a checklist
+applied independently to each tool.</p>
+<p><strong>Policy and consent violations</strong> can happen without
+displaying a traditionally secret field. A company may have permission
+to use an address to fulfill an order but not to send it to a marketing
+partner. Context and purpose are part of the rule.</p>
+<p>The important takeaway is that <strong>sensitivity alone does not
+determine permission</strong>. Identity, context, purpose, destination,
+and retention all matter. The August 2026 agent survey makes a
+complementary point: autonomy, tool use, collaboration, and
+safety/governance need to be considered together in a deployable
+architecture [2].</p>
+<h2 id="evidence-the-final-response-can-underestimate-leakage">Evidence:
+the final response can underestimate leakage</h2>
+<p>A particularly useful complementary paper is
+<strong>AgentLeak</strong>, by Faouzi El Yagoubi, Godwin Badu-Marfo, and
+Ranwa Al Mallah, published in <em>IEEE Access</em> in June 2026 [5]. Its
+authors evaluate multi-agent interactions across healthcare, finance,
+legal, and corporate settings, instrumenting more than the final reply.
+The reported study covers <strong>1,000 research scenarios, five
+language models, and 4,979 validated execution traces</strong> [5].</p>
+<figure>
+<img src="../figures/04-agentleak-findings.png"
+alt="Horizontal bar chart contrasting inter-agent, final output, and hidden leakage." />
+<figcaption aria-hidden="true">Horizontal bar chart contrasting
+inter-agent, final output, and hidden leakage.</figcaption>
+</figure>
+<p><em>Figure 3. Measurements reported by AgentLeak [5]: inter-agent
+messages disclosed sensitive data in 68.8% of traces, the final output
+in 27.2%, and 41.7% of traces had a clean final answer despite an
+internal leak. The categories overlap and must not be added
+together.</em></p>
+<p>That <strong>41.7% clean-output/internal-leak</strong> result makes
+the abstract privacy concern concrete. If a test only examines the
+assistant’s response, it can miss a large portion of exposure in this
+particular coordinator-worker evaluation. These are
+<strong>study-specific</strong> numbers, not general production rates
+and not a claim about all agents. The selected models, tasks,
+communication topology, instrumentation, and definition of a leak
+determine their interpretation.</p>
+<p>I would not turn this into “multi-agent systems are always unsafe.”
+The study reports that final-output leakage is lower in the tested
+multi-agent configurations than in its single-agent baseline, while
+newly introduced internal channels raise the total surface of exposure
+[5]. An architectural design can reduce one category of risk and
+increase another. That is exactly why a single success percentage is
+inadequate.</p>
+<h2 id="which-defenses-should-builders-actually-combine">Which defenses
+should builders actually combine?</h2>
+<p>The source survey identifies <strong>nine governance
+families</strong>. Its comparison table labels a mechanism as a primary,
+partial, or non-applicable defense for six disclosure outcomes. I turned
+that qualitative matrix into an original visualization below. The marks
+are the <strong>authors’ categorical assessment</strong>, not measured
+accuracy or a head-to-head leaderboard. [1]</p>
+<figure>
+<img src="../figures/03-control-coverage.png"
+alt="Source-derived matrix of nine privacy-control families against six types of disclosure." />
+<figcaption aria-hidden="true">Source-derived matrix of nine
+privacy-control families against six types of disclosure.</figcaption>
+</figure>
+<p><em>Figure 4. Adapted from the paper’s Table 5 [1]. A filled dot
+means primary coverage in the survey, a half dot means partial coverage;
+it does not mean a product achieves guaranteed protection.</em></p>
+<p>Three families matter most in the architecture I would ship.</p>
+<p><strong>1) Access control and purpose scoping.</strong> Give the
+agent only the data required for the current task. Enforce authorization
+at the database/document layer—not inside a prompt that asks the model
+to behave. Row-level security, column masking, per-user credentials, and
+task-scoped tool permissions reduce what can be exposed in the first
+place. Purpose matters: access for order fulfillment is not
+automatically access for marketing.</p>
+<p><strong>2) Information-flow control.</strong> Track sensitivity
+labels as values move through a pipeline. If a restricted employee field
+is fetched from a database, its classification should follow the derived
+value through computation, memory, a tool call, and a peer-agent
+message. A deterministic policy gate can then reject a flow to an
+unauthorized destination. The survey identifies information-flow control
+as particularly important for intermediate and compositional
+disclosure—while also marking it as an <strong>emerging</strong>, not
+fully mature, approach in agent settings [1].</p>
+<p><strong>3) Runtime governance and observability.</strong> Before
+executing a tool call or storing memory, verify the actor, purpose,
+recipient, and data classification. Record a safe audit event containing
+the decision and its policy version, but avoid copying the raw sensitive
+payload into the logs. This provides both preventive enforcement and
+evidence when failures occur. An output sanitizer can remain as defense
+in depth; it should never be the only boundary.</p>
+<p>Other families address different gaps: redaction and data
+minimization reduce the data released; differential privacy can
+constrain certain statistical disclosures; confidential retrieval aims
+to protect retrieval interactions; contextual privacy models handle
+social expectations; human approval gates irreversible decisions; and
+provenance supports investigation. <strong>No single row of the survey
+matrix covers every failure mode.</strong> [1]</p>
+<h2 id="what-is-on-the-benchmark-leaderboard-and-what-is-missing">What
+is on the benchmark “leaderboard,” and what is missing?</h2>
+<p>A survey is not necessarily a competition with one global
+leaderboard. Different benchmarks ask different questions.
+<strong>AgentDojo</strong> is a NeurIPS 2024 benchmark for tool-using
+agents under prompt injection, with <strong>97 realistic tasks and 629
+security test cases</strong> [6]. <strong>AgentLeak</strong> examines
+sensitive data moving through multi-agent pathways [5].
+<strong>SecureSQL</strong> focuses on database interfaces;
+<strong>MEXTRA</strong> on agent-memory extraction; and
+<strong>PrivacyLens</strong> on context-aware privacy decisions. The
+primary survey’s Table 6 compares 13 benchmark families by data surface,
+multi-step execution, and explicit policy evaluation [1].</p>
+<figure>
+<img src="../figures/05-benchmark-gap.png"
+alt="Source-derived comparison of the 13 benchmark families by multi-step and policy evaluation." />
+<figcaption aria-hidden="true">Source-derived comparison of the 13
+benchmark families by multi-step and policy evaluation.</figcaption>
+</figure>
+<p><em>Figure 5. Qualitative adaptation of 13 benchmarks in Table 6 [1].
+This is a coverage map, <strong>not</strong> a numerical performance
+leaderboard.</em></p>
+<p>This is where evaluation design becomes central. The September 2026
+systematic review by Nageshwaran and colleagues maps agent evaluation
+using three questions: <strong>what capability, how it is scored, and
+where it runs</strong>. The authors also report a striking
+reproducibility limitation: in their hand-verified set of 17 prominent
+benchmarks, none reported a complete standardized run-cost record, and
+none demonstrated that contamination, nondeterminism, and execution cost
+were jointly controlled [3]. These numbers describe the review’s
+specific audited sample, not all benchmarks in existence.</p>
+<p>What would a useful privacy leaderboard look like? It should measure
+at least four things together:</p>
+<ul>
+<li><strong>Task utility:</strong> did the agent complete the legitimate
+request?</li>
+<li><strong>Privacy violation rate:</strong> did sensitive information
+reach an unauthorized output, tool, memory store, or peer?</li>
+<li><strong>Policy compliance:</strong> were actor, recipient, purpose,
+consent, and retention constraints respected?</li>
+<li><strong>Operational cost:</strong> what latency, tool use, review
+burden, and expense did protection add?</li>
+</ul>
+<p>A particularly hard test should follow a value across <strong>SQL →
+retrieval → reasoning → memory → another agent</strong> and inspect
+intermediate channels under a single stated privacy policy. Lahjouji and
+Colaco identify the absence of this kind of cross-surface benchmark as a
+key gap [1].</p>
+<h2
+id="a-small-honest-ablation-what-if-we-only-filter-the-final-answer">A
+small, honest ablation: what if we only filter the final answer?</h2>
+<p>To turn the architecture discussion into something inspectable, I
+wrote a 100%-synthetic toy harness. It does <strong>not</strong> call a
+language model, simulate a real attacker, measure a product, or claim
+statistically generalizable performance. It runs <strong>16 declared
+flow cases</strong>: 10 prohibited and 6 permitted. Every case has an
+invented source, destination, classification, access flag, and purpose
+flag. Four deterministic control configurations decide whether each flow
+should be allowed:</p>
+<ol type="1">
+<li><strong>No enforcement:</strong> let every proposed flow pass.</li>
+<li><strong>Output filter:</strong> reject restricted values when sent
+directly to an answer.</li>
+<li><strong>Source scoping:</strong> reject reads when the source is not
+on the role’s allowlist.</li>
+<li><strong>Flow-policy gate:</strong> require source permission, a
+matching purpose, and an allowed sensitivity label for the
+destination.</li>
+</ol>
+<p>The two measures are <strong>prohibited flows blocked</strong> and
+<strong>permitted flows retained</strong>. Both use fixed, auditable
+denominators: 10 and 6. The code and all case-level decisions are
+included in the repository under <code>experiment/</code>.</p>
+<figure>
+<img src="../figures/06-synthetic-ablation.png"
+alt="Reproducible synthetic ablation comparing blocked unauthorized and retained permitted flows." />
+<figcaption aria-hidden="true">Reproducible synthetic ablation comparing
+blocked unauthorized and retained permitted flows.</figcaption>
+</figure>
+<p><em>Figure 6. Actual deterministic output from the included synthetic
+harness: 0%, 20%, 30%, and 100% of prohibited flows blocked across the
+four configurations; all six permitted flows were allowed. Because the
+fixtures and flow labels were explicitly constructed, the 100% result is
+a policy-unit-test outcome—not evidence that a real LLM system is
+perfectly secure.</em></p>
+<p>The exercise does <strong>not</strong> prove information-flow
+enforcement is easy. The hard engineering problems are the ones the toy
+model assumes away: accurately assigning data labels, propagating them
+through free-form text and model-generated summaries, resolving complex
+consent rules, accounting for inference from repeated aggregates, and
+dealing with uncertain downstream service behavior. An evaluation that
+reports “100% safe” on a hand-authored policy test without explaining
+those omissions would be misleading.</p>
+<p>What the toy does demonstrate is narrower but useful: <strong>a
+final-answer check has no chance of stopping an unauthorized flow that
+already happened inside a tool or memory call</strong>. That is a
+structural limitation, not a matter of tweaking the filter’s prompt.</p>
+<h2 id="memory-makes-the-problem-longitudinal">Memory makes the problem
+longitudinal</h2>
+<p>The October 2026 survey <strong>“Learning to Remember: Advances in
+Memory Mechanisms for Large Language Models”</strong> provides another
+perspective. Han and colleagues organize memory into nonparametric
+storage (e.g., text, graphs, databases), parametric mechanisms (e.g.,
+activations, caches, adapted weights), and memory for agent evolution,
+while treating memory construction, maintenance, retrieval,
+consolidation, forgetting, governance, and evaluation as a life cycle
+[4].</p>
+<p>For product builders, the design question is not simply “Which vector
+database should I use?” It is <strong>what should enter memory, who can
+recall it, how long it persists, and how it is corrected or
+deleted</strong>. A sensitive fragment that was legitimate in one
+interaction can be inappropriate in the next. I would apply
+classification and consent <strong>on write</strong>, verify the
+requester’s permissions <strong>on read</strong>, and include retention
+and deletion policies in the memory schema. Those are my architectural
+recommendations; they are not claims that the surveys tested this exact
+system.</p>
+<h2 id="the-reference-architecture-i-would-build">The reference
+architecture I would build</h2>
+<figure>
+<img src="../figures/07-policy-architecture.png"
+alt="Original privacy-aware agent reference architecture with policy gate, executor, audit, and labelled memory." />
+<figcaption aria-hidden="true">Original privacy-aware agent reference
+architecture with policy gate, executor, audit, and labelled
+memory.</figcaption>
+</figure>
+<p><em>Figure 7. Proposed architecture, synthesized from the literature
+and my design recommendations—not an architecture evaluated in the cited
+surveys.</em></p>
+<p>My starting design is deliberately conservative. The LLM can
+<strong>propose</strong> a plan but cannot grant itself data access. A
+separate policy service verifies each data read and side-effecting
+action. That service receives a principal, purpose, destination, and
+sensitivity labels. Data connectors enforce least privilege as close to
+the source as possible. Derived values preserve inherited labels unless
+a reviewed transformation explicitly changes their classification. The
+memory write path checks consent and retention; the read path checks the
+requester; and inter-agent communication passes through the same flow
+gate as an external tool call.</p>
+<p>The trace should record the <strong>decision</strong>, not casually
+replicate the payload. For example, “request 431 blocked: restricted
+customer field → external API; reason: incompatible purpose” is much
+safer than logging an entire customer JSON record. In enterprise
+products I would also make high-risk operations require a human approval
+step and define fallback behavior when policy services are
+unavailable.</p>
+<p>The engineering trade-off is real. Additional checks create latency
+and can reject legitimate work. A well-designed evaluation therefore has
+to optimize privacy and utility together, report false blocks, and
+include cost—not only show that one attack was stopped.</p>
+<h2 id="five-questions-i-would-ask-before-shipping-an-agent">Five
+questions I would ask before shipping an agent</h2>
+<ol type="1">
+<li><strong>Can I trace a sensitive value across every tool, memory
+write, and handoff?</strong> If not, I cannot tell what a clean answer
+hides.</li>
+<li><strong>Is access bound to a real user and task purpose?</strong> A
+system-wide service token is not a privacy model.</li>
+<li><strong>What happens after a session ends?</strong> I want explicit
+retention, deletion, and cross-user isolation tests.</li>
+<li><strong>Does evaluation inspect intermediate channels?</strong> An
+answer-only red-team test measures only one surface.</li>
+<li><strong>Can I report both utility and privacy under a repeatable
+test setup?</strong> An agent that refuses everything has perfect
+non-disclosure but very little value.</li>
+</ol>
+<h2
+id="my-take-the-next-competition-should-be-over-controlled-data-movement">My
+take: the next competition should be over <em>controlled data
+movement</em></h2>
+<p>The agent field is moving quickly toward persistent memory, many
+tools, delegated actions, and teams of collaborating models. That makes
+language-model safety only part of the engineering problem. Traditional
+access control answers <strong>who can read</strong>; agent privacy must
+also answer <strong>what may flow, why, to whom, and for how
+long</strong>.</p>
+<p>The deepest insight from the source survey is not “use another
+privacy filter.” It is that useful agents need a <strong>data governance
+architecture</strong> that survives composition. The AgentLeak
+measurements show why this matters in real benchmark traces; the
+evaluation survey explains why isolated scores are hard to interpret;
+and the memory survey shows why the lifetime of data extends beyond one
+prompt. [1][3][4][5]</p>
+<p>My prediction is that the best agent evaluations will look less like
+single-answer quizzes and more like instrumented workflows: explicitly
+stated policies, multi-surface traces, realistic permissions, measurable
+utility, repeatability, and run-cost disclosure. Until then, a system
+with a polished final response can still have a privacy story it has not
+told us.</p>
+<hr />
+<h2 id="references-and-further-reading">References and further
+reading</h2>
+<p><strong>[1] Primary survey.</strong> Lahjouji, N., &amp; Colaco, A.
+G. (2026, June 25). <em>Agents That Know Too Much: A Data-Centric Survey
+of Privacy in LLM Agents</em>. arXiv:2606.26627 (working-draft
+preprint). https://arxiv.org/abs/2606.26627 ; full text
+https://arxiv.org/html/2606.26627</p>
+<p><strong>[2] Architecture survey.</strong> Bajoria, S., Ranjan, S., M,
+A., Suri, V., Hassija, V., Chamola, V., &amp; Hussain, A. (2026, August
+24). <em>From Language Models to Agentic AI: A Survey of Autonomous,
+Action-Enabled, and Collaborative LLM Agents</em>. <em>Cognitive
+Computation</em>, 18, Article 103.
+https://doi.org/10.1007/s12559-026-10619-1</p>
+<p><strong>[3] Evaluation survey.</strong> Nageshwaran, V., Ezekiel, S.,
+Tran, T. T., &amp; Narasimhan, V. L. (2026, September 15). <em>Large
+language model agent evaluation and benchmarking: a systematic survey,
+meta-taxonomy, and critical research roadmap</em>. <em>Artificial
+Intelligence Review</em> (early access; DOI).
+https://doi.org/10.1007/s10462-026-11678-4</p>
+<p><strong>[4] Memory survey.</strong> Han, C., Yu, H., Wu, M., Zhang,
+D., &amp; Luo, J. (2026, October 26). <em>Learning to Remember: Advances
+in Memory Mechanisms for Large Language Models</em>. arXiv:2610.35089.
+https://arxiv.org/abs/2610.35089</p>
+<p><strong>[5] Empirical privacy benchmark.</strong> El Yagoubi, F.,
+Badu-Marfo, G., &amp; Al Mallah, R. (2026, June 17). <em>AgentLeak: A
+Benchmark for Internal-Channel Privacy Leakage in Multi-Agent LLM
+Systems</em>. <em>IEEE Access</em>, 14, 94960–94978.
+https://doi.org/10.1109/ACCESS.2026.3704541 ;
+https://arxiv.org/abs/2602.11510</p>
+<p><strong>[6] Agent security benchmark.</strong> Debenedetti, E.,
+Zhang, J., Balunović, M., Beurer-Kellner, L., Fischer, M., &amp; Tramèr,
+F. (2024). <em>AgentDojo: A Dynamic Environment to Evaluate Prompt
+Injection Attacks and Defenses for LLM Agents</em>. NeurIPS, Datasets
+and Benchmarks.
+https://proceedings.neurips.cc/paper_files/paper/2024/hash/97091a5177d8dc64b1da8bf3e1f6fb54-Abstract-Datasets_and_Benchmarks_Track.html</p>
+<p><strong>Editorial note.</strong> This is an original synthesis for a
+course short-story assignment. Figures 1, 2, 6, and 7 are original
+illustrations; figures 4 and 5 encode published qualitative tables with
+attribution; figure 3 redraws specific published statistics. The 16-case
+demonstration is explicitly synthetic. No original figures from the
+cited papers were copied.</p>
+</body>
+</html>

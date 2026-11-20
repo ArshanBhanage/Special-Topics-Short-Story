@@ -1,0 +1,47 @@
+{
+  "method": "deterministic synthetic flow-policy harness; not an LLM experiment",
+  "n_prohibited": 10,
+  "n_benign": 6,
+  "results": [
+    {
+      "control": "none",
+      "prohibited_total": 10,
+      "prohibited_blocked": 0,
+      "prohibited_allowed": 10,
+      "benign_total": 6,
+      "benign_allowed": 6,
+      "privacy_block_rate": 0.0,
+      "benign_utility_rate": 100.0
+    },
+    {
+      "control": "output_filter",
+      "prohibited_total": 10,
+      "prohibited_blocked": 2,
+      "prohibited_allowed": 8,
+      "benign_total": 6,
+      "benign_allowed": 6,
+      "privacy_block_rate": 20.0,
+      "benign_utility_rate": 100.0
+    },
+    {
+      "control": "source_scope",
+      "prohibited_total": 10,
+      "prohibited_blocked": 3,
+      "prohibited_allowed": 7,
+      "benign_total": 6,
+      "benign_allowed": 6,
+      "privacy_block_rate": 30.0,
+      "benign_utility_rate": 100.0
+    },
+    {
+      "control": "flow_policy",
+      "prohibited_total": 10,
+      "prohibited_blocked": 10,
+      "prohibited_allowed": 0,
+      "benign_total": 6,
+      "benign_allowed": 6,
+      "privacy_block_rate": 100.0,
+      "benign_utility_rate": 100.0
+    }
+  ]
+}
