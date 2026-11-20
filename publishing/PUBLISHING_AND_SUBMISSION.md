@@ -22,7 +22,7 @@ Visit [the Fall 2026 sheet](https://docs.google.com/spreadsheets/d/13YnPKykntSON
 4. Upload the PNG illustrations from `figures/` as native Medium images **near their matching figure captions**. Medium may not preserve relative paths from pasted Markdown. Check the preview: every figure must actually render.
 5. Suggested topics/tags: `AI Agents`, `LLM Security`, `AI Engineering`, `Generative AI`, `LLM Evaluation` (within Medium's tag count limit).
 6. Preview on desktop/mobile, review caption contrast and spelling, then **Publish** and copy the live story URL.
-7. Replace the README's `ADD PUBLISHED MEDIUM URL HERE` with the real URL. Also enter it in `publishing/links.json` under `medium_url`.
+7. Replace the README's Medium pending status with the real URL. Also enter it in `publishing/links.json` under `medium_url`.
 
 **Suggested Medium description:** An original, diagram-rich research synthesis of a June 2026 agent-privacy survey, enriched with recent evaluation/memory reviews, peer-reviewed AgentLeak evidence, and an explicitly synthetic ablation.
 
@@ -47,7 +47,7 @@ The presentation is published on [Scribd](https://www.scribd.com/document/109875
 
 - Return to [professor's selection sheet](https://docs.google.com/spreadsheets/d/13YnPKykntSONmfqkHyh94d7KsIvjdhrkblqKg8yLTFM/edit#gid=141293072), find row **19** (Arshan Bhanage).
 - Column **B** already points via hyperlink to the intended GitHub destination; check it is the *right public working repo*. If instructor allows edits and the displayed text `Github Link` needs replacement, enter the actual public URL in **B19**. Do not touch peers' rows. Do not set approval status yourself.
-- Check the exact repository URL without a login and verify Medium, SlideShare, YouTube, source papers, images, and PPT/PDF are accessible.
+- Check the exact repository URL without a login and verify Medium, Scribd, YouTube, source papers, images, and PPT/PDF are accessible.
 - **Only then** submit the public GitHub directory URL to the LMS.
 
 ## Upload-risk checklist
@@ -57,7 +57,7 @@ The presentation is published on [Scribd](https://www.scribd.com/document/109875
 | Approval not confirmed | Confirm `2026 short story!A19`, D19 with instructor |
 | GitHub link doesn't exist/is private | Open it in a private browser window |
 | Medium story not actually published | Open the new Medium URL when logged out |
-| SlideShare only locally exported | Open published link and count 22 slides |
+| Scribd presentation unavailable | Open published link and count 22 slides |
 | Video shorter than 15 minutes | Inspect the actual MP4/YouTube runtime |
 | Article images lost on paste | Verify every figure and caption on Medium |
 | Data points mistaken for original measurements | Preserve source citations and synthetic disclaimer |
